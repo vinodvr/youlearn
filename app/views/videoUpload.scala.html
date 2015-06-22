@@ -1,0 +1,13 @@
+@import controllers.forms.VideoUploadForm
+@(myForm : Form[VideoUploadForm])
+
+@main("Upload to YouLearn!") {
+    @helper.form(action = routes.Videos.uploadVideo(), 'enctype -> "multipart/form-data") {
+        <fieldset>
+            <legend>New Video Upload</legend>
+            @helper.inputText(myForm("title"), '_label -> "Title", 'size -> "100")
+            @helper.inputFile(myForm("videoData"), '_label -> "Video File", 'size -> "100")
+        </fieldset>
+        <input type="submit" class="btn btn-primary" value="Upload!">
+    }
+}

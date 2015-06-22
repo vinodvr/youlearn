@@ -1,0 +1,48 @@
+@(userVideos: List[Video], popularVideos: List[Video])
+
+@main("Welcome to YouLearn!") {
+
+    @if(userVideos.nonEmpty) {
+        <h2>Your Videos</h2>
+        <table class="table table-striped">
+            <tr>
+            @for(userVideo <- userVideos) {
+                <td>
+                    @displayVideo(userVideo)
+                </td>
+            }
+            </tr>
+        </table>
+
+    }
+
+
+    @if(popularVideos.nonEmpty) {
+        <h2>Popular Videos</h2>
+        <table class="table table-striped">
+            <tr>
+            @for(userVideo <- popularVideos) {
+                <td>
+                    @displayVideo(userVideo)
+                </td>
+            }
+            </tr>
+        </table>
+    } else {
+        <p>No popular videos yet</p>
+    }
+
+}
+
+@displayVideo(userVideo : Video) = {
+    <div>
+        <h4>@userVideo.title</h4>
+        <a href="@routes.Videos.show(userVideo.id)">
+            <video width="320" height="240">
+                <source src="@routes.Videos.getVideoContent(userVideo.id)" type="video/mp4">
+                Your browser does not support the video tag.
+            </video>
+        </a>
+        <p>By @userVideo.uploadedBy.name, @userVideo.totalViews views</p>
+    </div>
+}
