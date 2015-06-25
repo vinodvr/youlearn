@@ -36,13 +36,13 @@
 
 @displayVideo(userVideo : Video) = {
     <div>
-        <h4>@userVideo.title</h4>
-        <a href="@routes.Videos.show(userVideo.id)">
-            <video width="320" height="240">
-                <source src="@routes.Videos.getVideoContent(userVideo.id)" type="video/mp4">
-                Your browser does not support the video tag.
-            </video>
-        </a>
+        <h4><a href="@routes.Videos.show(userVideo.id)">@userVideo.title</a></h4>
+        <video class="video-js vjs-default-skin" controls
+        preload="auto" width="480" height="240"
+        data-setup="{}">
+            <source src="@routes.Videos.getVideoContent(userVideo.id, "video/mp4")" type='video/mp4'>
+            <p class="vjs-no-js">To view this video please enable JavaScript, and consider upgrading to a web browser that <a href="http://videojs.com/html5-video-support/" target="_blank">supports HTML5 video</a></p>
+        </video>
         <p>By @userVideo.uploadedBy.name, @userVideo.totalViews views</p>
     </div>
 }

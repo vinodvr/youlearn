@@ -12,7 +12,7 @@ GET         /logout                      controllers.Application.logout()
 GET         /videos/upload               controllers.Videos.uploadVideoForm()
 GET         /videos/:id                  controllers.Videos.show(id: String)
 POST        /videos/                     controllers.Videos.uploadVideo()
-GET         /videos/getContent/:id       controllers.Videos.getVideoContent(id: String)
+GET         /videos/getContent/:id       controllers.Videos.getVideoContent(id: String, mimeType: String)
 
 
 # Map static resources from the /public folder to the /assets URL path

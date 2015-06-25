@@ -3,6 +3,7 @@ package controllers;
 import controllers.forms.VideoUploadForm;
 import models.Video;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
 import play.data.Form;
 import play.mvc.Controller;
 import play.mvc.Http;
@@ -12,7 +13,9 @@ import views.html.video;
 import views.html.videoUpload;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -81,12 +84,32 @@ public class Videos extends Controller {
         return redirect(routes.Application.index());
     }
 
-    public Result getVideoContent(String id) {
+    public Result getVideoContent(String id, String mimeType) throws Exception {
         Video video = Video.getById(id);
         if (video == null) {
             return notFound();
         }
-        return ok(video.path);
+        File path = video.path;
+        String range = request().getHeader("Range");
+        if (range != null) {
+            long totalSize = FileUtils.sizeOf(path);
+            int stByte = Integer.valueOf(range.split("=")[1].split("-")[0]);
+            InputStream stream = new FileInputStream(path);
+            IOUtils.skip(stream, stByte);
+
+            int bufSize = 1024 * 1024;
+            byte[] buffer = new byte[bufSize];
+            int actualRead = IOUtils.read(stream, buffer, 0, bufSize);
+
+            response().setHeader("Content-Type", mimeType);
+            response().setHeader("Content-Length", String.valueOf(actualRead));
+            response().setHeader("Accept-Ranges", "bytes");
+            response().setHeader("Content-Range", "bytes " + stByte + "-" + String.valueOf(stByte + actualRead - 1) + "/" + String.valueOf(totalSize));
+            response().setHeader("Content-Disposition", "attachment; filename=" + path.getName());
+            return status(206, buffer);
+        } else {
+            return ok(path);
+        }
     }
 
 
